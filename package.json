@@ -5,15 +5,37 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "lint": "eslint src --ext .js,.vue --max-warnings 10",
+    "lint:fix": "eslint src --ext .js,.vue --fix",
+    "format": "prettier --write \"src/**/*.{js,vue,scss,css}\""
   },
   "dependencies": {
+    "axios": "^1.18.1",
     "element-ui": "^2.15.14",
     "vue": "^2.7.16",
-    "vue-router": "^3.6.5"
+    "vue-router": "^3.6.5",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue2": "^2.3.4",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-vue": "^9.33.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.9.6",
+    "sass": "^1.101.3",
     "vite": "^8.1.5"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{scss,css,md,json}": [
+      "prettier --write"
+    ]
   }
 }

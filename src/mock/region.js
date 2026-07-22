@@ -1,4 +1,4 @@
-﻿const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // ====== 省 ======
 const provinces = [
@@ -230,6 +230,10 @@ export async function fetchTowns(districtValue) {
 }
 
 // 判断节点是否有下级数据（用于设置 leaf 属性）
+export function hasCities(provinceValue) {
+  return provinceValue in cities
+}
+
 export function hasDistricts(cityValue) {
   return cityValue in districts
 }
