@@ -1,440 +1,289 @@
-﻿---
+---
 title: 前端工程规约
 version: 1.0.0
-updated: 2026-07-23
-stack: vue2@2.7 | element-ui@2.15 | vue-router@3 | vuex@3 | axios | vite@7 | scss
-alias: "@ -> src/"
-package_manager: npm
+tags: [vue2, element-ui, eslint, prettier, husky]
+rules:
+  - priority: P1 必要
+  - priority: P2 强烈推荐
 ---
 
-# 前端工程规约
+# Vue2 项目开发通用规范（AI 友好型）
 
-> 适用于 Codex / Copilot / Cursor 等 AI 编码助手的结构化规约。
-> 所有规则均为 **强制性**，新增代码须逐条遵守。
-
----
-
-## 1. 技术栈标识
-
-```yaml
-framework: Vue 2.7
-ui_library: Element UI 2.15
-router: Vue Router 3.x (hash mode)
-state: Vuex 3.x
-http: Axios
-build: Vite 7.x
-css: SCSS (dart-sass)
-lang: JavaScript (ES6+)
-alias: "@ -> src/"
-```
+> **指令**: 本规范适用于所有 Vue2 单文件组件（`.vue`）的开发。AI 在生成或修改代码时，**必须**严格遵守以下所有规则。规则优先级：**必要 (P1)** > **强烈推荐 (P2)**。
 
 ---
 
-## 2. 项目目录
+## 1. 命名规范
 
-```
-src/
-├── api/               # Axios 请求层，按业务分模块
-├── assets/            # 静态资源
-├── components/        # 公共组件（跨页面复用）
-├── mock/              # Mock 数据
-├── router/            # 路由配置
-│   └── index.js
-├── store/             # Vuex 状态管理
-│   └── index.js
-├── styles/            # 全局样式
-│   ├── variables.scss
-│   └── global.scss
-├── utils/             # 工具函数
-│   └── request.js     # Axios 实例
-└── views/             # 页面级组件，按菜单层级组织
-    ├── home/
-    │   └── index.vue
-    ├── about/
-    │   └── index.vue
-    └── demo/
-        ├── cascader/
-        │   ├── index.vue
-        │   └── RegionSelector.vue
-        └── upload/
-            ├── index.vue
-            ├── SingleFileUpload.vue
-            ├── MultiFileUpload.vue
-            └── FilePreviewDialog.vue
-```
+### 1.1 项目与目录
 
----
+| 标识 | 规则 |
+|------|------|
+| **项目名** | 全部小写，kebab-case。如 `mall-management-system` |
+| **目录名** | 全部小写，kebab-case。复数用复数形式。如 `components`、`utils`、`user-profile` |
 
-## 3. 命名规则
+### 1.2 Vue 组件文件
 
-### 3.1 项目与目录命名
+| 规则 | 说明 |
+|------|------|
+| **文件名** | MUST `PascalCase` 或 `kebab-case`，推荐 `PascalCase`。如 `UserProfile.vue` |
+| **基础组件前缀** | 以 `Base`、`App`、`V` 为前缀。如 `BaseButton.vue` |
+| **耦合子组件前缀** | 以父组件名为前缀。如 `TodoList.vue` → 子 `TodoListItem.vue` |
+| **页面入口** | 路由对应页面统一命名 `index.vue` |
 
-| 类型 | 风格 | 示例 | 备注 |
-|------|------|------|------|
-| 项目名 | kebab-case | `my-vue2-app` | 全部小写，单词间用短横线 |
-| 目录名 | kebab-case | `user-profile/` | 有复数结构时使用复数 |
-| 组件目录 | kebab-case | `business/` | `components` 下的子目录 |
+### 1.3 JavaScript 与变量
 
-### 3.2 Vue 组件命名
-
-组件名**必须**为多单词 PascalCase。
-
-| 规则 | 示例 | 说明 |
+| 标识 | 规则 | 示例 |
 |------|------|------|
-| 通用组件 | `UserProfile.vue` | 多单词，避免与 HTML 元素冲突 |
-| 基础组件 | `BaseButton.vue` | 纯展示类组件，`Base` 前缀 |
-| 单例组件 | `TheHeader.vue` | 项目中仅使用一次的组件 |
-| 耦合子组件 | 父 `TodoList` → 子 `TodoListItem` | 以父组件名为前缀 |
-| 页面入口 | `index.vue` | 路由对应的页面组件统一命名 |
+| **变量 / 函数** | camelCase | `getUserInfo`、`userList` |
+| **常量** | UPPER_SNAKE_CASE | `MAX_SIZE`、`API_BASE_URL` |
+| **组件 `name`** | PascalCase，与文件名一致 | `UserProfile` |
 
-### 3.3 其他文件命名
+### 1.4 CSS 类名
 
-| 文件类型 | 风格 | 示例 |
-|----------|------|------|
-| JavaScript 模块 | kebab-case | `file-utils.js`、`request.js` |
-| 类文件（JS） | PascalCase | `UserModel.js` |
-| Vuex 模块 | kebab-case | `user-store.js` |
-| 路由配置 | kebab-case | `order-routes.js` |
-| SCSS / CSS | kebab-case | `variables.scss`、`global.scss` |
-| 图片/图标 | snake_case | `error_icon.png` |
+CSS 类名使用 `kebab-case`。如 `.user-card`、`.btn-primary`。
 
-### 3.4 标识符命名
+---
 
-| 标识符 | 规则 | 正确示例 | 错误示例 |
-|--------|------|----------|----------|
-| 变量 | camelCase | `userList`、`tableData` | `user_list` |
-| 常量 | UPPER_SNAKE | `MAX_FILE_SIZE` | `maxFileSize` |
-| 组件 name | PascalCase | `name: "RegionSelector"` | `name: "region"` |
-| prop | camelCase | `fileList` | — |
-| 事件名 | kebab-case | `@change="handleChange"` | `@onChange` |
-| 方法 | camelCase | `fetchData()` | `fetch_data()` |
-| CSS 类 | BEM | `block__el--mod` | `block-el-mod` |
-| Mutation | UPPER_SNAKE | `SET_USER_LIST` | `setUserList` |
+## 2. Vue 组件编码规范
 
-### 3.5 导入顺序
+### 2.1 必要规则（P1）— 必须遵守
 
-```
-1. 外部包（vue / axios / element-ui 等）
-2. @/ 内部模块
-3. 同级相对路径（仅无法使用 @ 时）
-```
+#### 2.1.1 组件名为多个单词
 
+**规则**: 组件 `name` MUST 由多个单词组成，避免与 HTML 元素冲突。
+
+✅ **正确**:
 ```javascript
-// ✅ 标准
-import Vue from "vue"
-import RegionSelector from "@/views/demo/cascader/RegionSelector"
-import request from "@/utils/request"
-
-// ❌ 禁止
-import RegionSelector from "../components/RegionSelector.vue"
-```
-# 4. Vue 组件
-
-### 4.1 选项声明顺序（强制执行）
-
-```
-1. name
-2. components
-3. props
-4. data
-5. computed
-6. watch
-7. 生命周期钩子 (mounted → beforeDestroy)
-8. methods
-```
-
-```javascript
-// ✅ 标准结构
 export default {
-  name: "DemoUpload",
-  components: { ChildComp },
-  props: { value: { type: Array, default: () => [] } },
-  data() { return { count: 0 } },
-  computed: { fullName() { return this.first + " " + this.last } },
-  watch: { value: { immediate: true, handler() {} } },
-  mounted() {},
-  beforeDestroy() {},
-  methods: { handleClick() {} },
+  name: 'TodoItem'
 }
 ```
 
-### 4.2 模板规则
-
-| 规则          | 说明                              | 示例                            |
-|---------------|-----------------------------------|---------------------------------|
-| 缩进          | 2 空格                            | —                               |
-| 事件绑定      | 使用 `@` 缩写                     | `@click` (非 `v-on:click`)      |
-| 属性绑定      | 使用 `:` 缩写                     | `:value` (非 `v-bind:value`)    |
-| v-for 必须 :key | `:key` 唯一标识                  | `v-for="item in list" :key="item.id"` |
-| v-if / v-for  | 禁止同时用在同一元素               | 用 `template` 包装一层          |
-| slot-scope    | 使用 `slot-scope="{ row }"`        | Vue 2 语法，禁止用 `#default`   |
-
-### 4.3 样式
-
-```html
-<!-- ✅ 必须使用 scoped -->
-<style scoped lang="scss">
-.card { color: $primary-color; }
-</style>
-
-<!-- ❌ 禁止缺少 scoped -->
-<style>
-.card { color: blue; }
-</style>
+❌ **错误**:
+```javascript
+export default {
+  name: 'Todo'
+}
 ```
 
 ---
 
-## 5. Vuex
+#### 2.1.2 组件 `data` 必须为函数
 
-### 5.1 模块结构
+**规则**: 组件 `data` MUST 是一个返回对象的函数。
 
+✅ **正确**:
 ```javascript
-// ✅ 标准 module
 export default {
-  namespaced: true,
-  state: {},
-  mutations: {
-    SET_DATA(state, payload) { state.data = payload },
-  },
-  actions: {
-    async fetchData({ commit }) {
-      commit("SET_DATA", await api.fetch())
-    },
-  },
-}
-```
-
-### 5.2 约束
-
-| 字段       | 格式           | 必须 | 示例                   |
-|------------|----------------|------|------------------------|
-| Module     | namespaced     | yes  | `namespaced: true`     |
-| Mutation   | UPPER_SNAKE    | yes  | `SET_USER_LIST`        |
-| Action     | camelCase      | yes  | `fetchUserList`        |
-| State      | camelCase      | yes  | `userList`             |
-
----
-
-## 6. API / Axios
-
-### 6.1 实例配置
-
-```javascript
-// utils/request.js — 标准模板
-import axios from "axios"
-import { Message } from "element-ui"
-
-const service = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
-  timeout: 15000,
-})
-
-service.interceptors.response.use(
-  (res) => res.data,
-  (err) => {
-    Message.error(err.message || "请求失败")
-    return Promise.reject(err)
+  data() {
+    return { count: 0 }
   }
-)
-
-export default service
-```
-
-### 6.2 API 模块规范
-
-```javascript
-// api/region.js — 标准模板
-import request from "@/utils/request"
-
-export function getProvinces() {
-  return request({ url: "/region/provinces", method: "get" })
 }
 ```
 
-| 规则                   | 约束                             |
-|------------------------|----------------------------------|
-| 每个函数单一职责        | 一个 `get` / `post` 一个函数     |
-| 路径格式               | `kebab-case`（中横线小写）       |
-| 统一通过 `request` 实例 | 禁止直接使用 `axios`             |
-| 函数注释（可选）       | `/** 获取省份列表 */`            |
-
----
-
-## 7. 导入规范
-
-### 7.1 路径别名
-
-```
-// ✅ 使用 @ 别名
-import RegionSelector from "@/components/RegionSelector.vue"
-import request from "@/utils/request"
-
-// ❌ 禁止相对路径
-import RegionSelector from "../components/RegionSelector.vue"
-```
-
-### 7.2 导入顺序
-
-```
-1. 外部包（vue / axios / element-ui 等）
-2. @/ 内部模块
-3. 同级相对路径（仅在无法使用 @ 时）
-
-// ✅ 标准
-import Vue from "vue"
-import axios from "axios"
-import RegionSelector from "@/components/RegionSelector.vue"
-```
-
----
-
-## 8. SCSS
-
-### 8.1 当前可用变量
-
-```scss
-$primary-color: #409eff;
-$sidebar-bg: #304156;
-$content-bg: #f0f2f5;
-$text-primary: #303133;
-$text-regular: #606266;
-$text-secondary: #909399;
-$border-color: #ebeef5;
-$border-light: #e4e7ed;
-$success-color: #67c23a;
-$warning-color: #e6a23c;
-$danger-color: #f56c6c;
-$info-color: #909399;
-$sidebar-width: 220px;
-$header-height: 60px;
-$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-  "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-```
-
-### 8.2 SCSS 书写规则
-
-| 规则                    | 说明                              |
-|-------------------------|-----------------------------------|
-| 变量引用                | 使用 `$` 引用，禁止硬编码颜色值     |
-| 注释                    | 使用 `//` 行注释                  |
-| 嵌套深度               | 不超过 4 层                        |
-| `!important`            | 禁止使用                          |
-| 布局                   | 优先 flexbox                      |
-| 组件样式               | 必须 `scoped`                     |
-| 全局变量               | 通过 Vite `additionalData` 自动注入|
-
----
-
-## 9. Git
-
-### 9.1 分支
-
-| 分支       | 用途                | 基线     |
-|------------|---------------------|----------|
-| `main`     | 生产稳定            | —        |
-| `dev`      | 日常开发            | main     |
-| `feat/*`   | 新功能              | dev      |
-| `fix/*`    | 修复                | dev      |
-| `refactor/*` | 重构              | dev      |
-
-### 9.2 提交格式
-
-```
-<type>(<scope>): <subject>
-
-# type: feat | fix | refactor | style | docs | chore | perf
-# scope: 组件名/模块名（可选）
-# subject: 中文，20字以内
-```
-
-```bash
-# ✅ 示例
-git commit -m "feat(region): 添加四级懒加载级联选择器"
-git commit -m "fix(upload): 修复文件预览弹窗关闭后 URL 未释放"
-git commit -m "refactor: 提取公共 Axios 实例到 utils/request.js"
-
-# ❌ 禁止
-git commit -m "update"
-git commit -m "fix bug"
-git commit -m "改了一些东西"
-```
-
----
-
-## 10. 快速规则摘要
-
-### 10.1 必须做
-
-```
-✅ 组件文件 = PascalCase.vue, name 与文件名一致
-✅ 变量 = camelCase, 常量 = UPPER_SNAKE
-✅ vue 文件使用 scoped + lang="scss"
-✅ v-for 必须带 :key
-✅ 导入优先使用 @/ 别名
-✅ Vuex module 必须 namespaced: true
-✅ Mutation 名全大写 + 下划线
-✅ API 模块通过 request 实例发送
-✅ 颜色/间距/字号通过 SCSS 变量引用
-```
-
-### 10.2 禁止做
-
-```
-❌ 组件 name 使用 kebab-case
-❌ v-if 和 v-for 在同一元素
-❌ 使用 !important
-❌ 直接使用 axios（必须通过 request 实例）
-❌ 硬编码颜色值（5a8ff2 / #303133 等→使用 $变量）
-❌ 提交信息使用非规范格式
-❌ 相对路径导入（使用 @/ 替代）
-```
-
----
-
-## 11. AI 上下文示例
-
-当 AI 需要生成新文件时，遵循以下模板：
-
+❌ **错误**:
 ```javascript
-// 📁 src/api/user.js
-import request from "@/utils/request"
-
-export function getUserList(params) {
-  return request({ url: "/user/list", method: "get", params })
+export default {
+  data: { count: 0 }
 }
 ```
+
+---
+
+#### 2.1.3 Prop 定义尽量详细
+
+**规则**: Prop MUST 使用对象语法，至少指定 `type`。
+
+✅ **推荐**:
+```javascript
+props: {
+  status: {
+    type: String,
+    required: true,
+    validator: (value) => ['success', 'warning'].includes(value)
+  },
+  title: {
+    type: String,
+    default: '默认标题'
+  }
+}
+```
+
+❌ **避免**:
+```javascript
+props: ['status', 'title']
+```
+
+---
+
+#### 2.1.4 `v-for` 必须设置 `key`
+
+**规则**: `v-for` MUST 绑定 `:key`，值为唯一稳定 ID。
+
+✅ **正确**:
+```vue
+<li v-for="item in items" :key="item.id">{{ item.text }}</li>
+```
+
+---
+
+#### 2.1.5 避免 `v-if` 与 `v-for` 同时使用
+
+**规则**: MUST NOT 在同一元素上同时使用 `v-if` 和 `v-for`。
+
+✅ **解决方案**: 使用计算属性先过滤。
 
 ```vue
-<!-- 📁 src/views/UserList.vue -->
 <template>
-  <div class="user-list">
-    <el-table :data="users" stripe>
-      <el-table-column prop="name" label="姓名" />
-    </el-table>
-  </div>
+  <li v-for="user in activeUsers" :key="user.id">{{ user.name }}</li>
 </template>
 
 <script>
 export default {
-  name: "UserList",
-  data() { return { users: [] } },
-  mounted() { this.fetchData() },
-  methods: {
-    async fetchData() {
-      // 通过 @/api 模块调用
-    },
-  },
+  computed: {
+    activeUsers() {
+      return this.users.filter(u => u.isActive)
+    }
+  }
 }
 </script>
+```
 
-<style scoped lang="scss">
-.user-list { padding: 20px; }
+---
+
+#### 2.1.6 组件样式设置作用域
+
+**规则**: 组件样式 MUST 添加 `scoped` 属性。
+
+✅ **正确**:
+```vue
+<style scoped>
+.button { background: blue; }
 </style>
 ```
 
 ---
 
-> **版本:** 1.0.0 | **最后更新:** 2026-07-23
-> **适用 AI:** Codex / Copilot / Cursor
-> **优先级:** 本文件规则优先级高于所有通用编码规范
+### 2.2 强烈推荐规则（P2）— 提升可读性
+
+#### 2.2.1 模板中的组件名大小写
+
+**规则**: 单文件组件模板中，组件名 SHOULD 使用 `PascalCase`。
+
+✅ `<UserProfile />`　　❌ `<user-profile />`
+
+#### 2.2.2 自闭合组件
+
+**规则**: 无内容组件 SHOULD 使用自闭合标签。
+
+✅ `<UserProfile />`　　❌ `<UserProfile></UserProfile>`
+
+---
+
+## 3. 项目结构
+
+推荐按业务模块组织，将相关功能聚合。
+
+```
+src/
+├── api/                # API 请求封装
+├── assets/             # 静态资源
+├── components/         # 公共组件
+│   ├── base/           # 基础组件
+│   └── business/       # 业务组件
+├── config/             # 配置文件
+├── constants/          # 常量定义
+├── directives/         # 自定义指令
+├── filters/            # 全局过滤器
+├── mixins/             # 全局混入
+├── router/             # 路由配置
+│   └── index.js
+├── store/              # Vuex 状态管理
+│   └── index.js
+├── utils/              # 工具函数
+├── views/              # 页面级组件（按模块划分）
+│   └── user/
+│       ├── UserList.vue
+│       └── UserDetail.vue
+├── App.vue
+└── main.js
+```
+
+---
+
+## 4. 代码风格与质量
+
+### 4.1 缩进与格式
+
+| 项目 | 规则 |
+|------|------|
+| **缩进** | 2 个空格 |
+| **分号** | 语句结尾 MUST 使用 `;` |
+| **引号** | 统一使用单引号 `'` |
+| **编码** | UTF-8 |
+
+### 4.2 注释规范
+
+| 场景 | 要求 |
+|------|------|
+| **公共组件 / 函数** | MUST 编写清晰注释，说明用途、参数和返回值 |
+| **复杂业务逻辑** | MUST 添加注释解释目的 |
+| **待办事项** | 使用 `// TODO: 描述` 格式 |
+
+### 4.3 工具链配置
+
+#### ESLint
+
+MUST 使用 `eslint-plugin-vue`，推荐 `plugin:vue/recommended`。
+
+```javascript
+// .eslintrc.js
+module.exports = {
+  extends: [
+    'plugin:vue/recommended',
+    'eslint:recommended'
+  ],
+  rules: {
+    'vue/multi-word-component-names': 'error',
+    'vue/require-default-prop': 'error',
+    'vue/attribute-hyphenation': 'error'
+  }
+}
+```
+
+#### Prettier
+
+建议配合 Prettier 统一格式化代码。
+
+---
+
+## 5. 状态管理（Vuex）
+
+| 规则 | 说明 |
+|------|------|
+| **模块化** | 复杂应用 MUST 按业务模块拆分 `store/modules/` |
+| **严格模式** | 开发环境开启 `strict: true`，禁止直接修改 `state` |
+
+---
+
+## 6. 路由（Vue Router）
+
+| 规则 | 说明 |
+|------|------|
+| **模块化** | 路由配置建议按业务拆分 |
+| **命名** | 路由 `name` 使用 PascalCase |
+
+---
+
+## 7. 禁止事项（负面清单）
+
+| 禁止行为 | 原因 | 替代方案 |
+|----------|------|----------|
+| 组件名为单个单词 | 与 HTML 元素冲突 | 使用多单词名称 |
+| `v-for` 不设置 `key` | 渲染性能问题和状态错乱 | 绑定 `:key` 为唯一 ID |
+| `v-if` 与 `v-for` 同时使用 | `v-for` 优先级更高，性能浪费 | 使用计算属性过滤 |
+| 直接修改 `props` | 单向数据流被破坏 | 通过 `$emit` 触发父组件事件 |
+| 滥用 `Mixins` | 命名冲突和隐式依赖 | 优先使用工具函数或组合式 API |
+
+---

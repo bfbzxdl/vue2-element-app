@@ -3,3 +3,5 @@ dist
 .vscode
 *.local
 *.log
+
+.husky

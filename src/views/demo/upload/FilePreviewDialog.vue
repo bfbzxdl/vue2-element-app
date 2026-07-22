@@ -36,6 +36,11 @@ export default {
   },
   methods: {
     open(file) {
+      console.log("[PreviewDialog] open() called, file=", file ? file.name : null);
+      console.log("[PreviewDialog] open() called");
+      console.log("[PreviewDialog] file =", file);
+      console.log("[PreviewDialog] file.raw =", file ? file.raw : null);
+      console.log("[PreviewDialog] file.name =", file ? file.name : null);
       if (this.cacheUrl) { URL.revokeObjectURL(this.cacheUrl); this.cacheUrl = null }
       const raw = file.raw || file
       if (!raw) return
@@ -45,6 +50,7 @@ export default {
 
       if (this.type === "text") {
         raw.text().then((text) => { this.textContent = text }).catch(() => { this.textContent = "无法读取文件内容" })
+        console.log("[PreviewDialog] setting visible = true, current cacheUrl =", this.cacheUrl);
         this.visible = true; return
       }
       if (this.type === "image" || this.type === "pdf") {
